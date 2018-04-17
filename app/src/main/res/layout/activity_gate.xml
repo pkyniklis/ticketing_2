@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context="com.example.android.ticketing_2.GateActivity">
+
+    <com.alexvasilkov.gestures.views.GestureFrameLayout
+        android:id="@+id/gate_gestureView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7">
+
+        <!-- GestureFrameLayout can contain only one child -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Layout content goes here -->
+            <ImageView
+                android:id="@+id/gate_front"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/gate111_back" />
+
+            <ImageView
+                android:id="@+id/gate_back"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:alpha="0"
+                android:scaleType="centerInside"
+                android:src="@drawable/gate111_back" />
+        </FrameLayout>
+    </com.alexvasilkov.gestures.views.GestureFrameLayout>
+
+    <ImageView
+        android:id="@+id/gate_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:src="@drawable/stub" />
+
+</LinearLayout>
