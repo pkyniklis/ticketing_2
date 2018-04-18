@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,15 +15,59 @@ import android.widget.ImageView;
 
 import com.alexvasilkov.gestures.Settings;
 import com.alexvasilkov.gestures.views.interfaces.GestureView;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    final ArrayList<Gate> gatesList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //Log.d("Petros", "test1" );
+
+        /*
+        gates.put("111" , new Gate("111", 7, 15, 0xff3c0000));
+        gates.put("218" , new Gate("218", 4, 12, 0xff140000));
+        gates.put("219" , new Gate("219", 4, 10, 0xff280000));
+        */
+        DatabaseReference mDatabase;
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Gates");
+
+        mDatabase.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Gate gate = dataSnapshot.getValue(Gate.class);
+                gatesList.add(gate);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         GestureView gestureView = findViewById(R.id.gestureView);
         gestureView.getController().getSettings()
@@ -43,10 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
         final Intent intent = new Intent(this, GateActivity.class);
 
-        final ArrayList<Gate> gates = new ArrayList<>();
-        gates.add(new Gate("111", 7, 15, 0xff3c0000));
-        gates.add(new Gate("218", 4, 12, 0xff140000));
-        gates.add(new Gate("219", 4, 10, 0xff280000));
+        /*
+        gatesList.add(new Gate("111", 7, 15, 0xff3c0000));
+        gatesList.add(new Gate("218", 4, 12, 0xff140000));
+        gatesList.add(new Gate("219", 4, 10, 0xff280000));
+        */
 
         backImageView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -67,11 +113,13 @@ public class MainActivity extends AppCompatActivity {
                         backImageView.setDrawingCacheEnabled(false);
 
                         int touchColor = hotspots.getPixel(x, y);
+                        //Toast.makeText(MainActivity.this, "Touch color "+ touchColor, Toast.LENGTH_SHORT).show();
 
                         // Loop through all gates and find the one with the same color
-                        for (Gate gate : gates) {
-                            int seatColor = gate.getColor();
-                            if (touchColor == seatColor) {
+                        for (Gate gate : gatesList) {
+                            int gateColor = Color.parseColor(gate.getColor());
+
+                            if (touchColor == gateColor) {
                                 final Gate chosenGate = gate;
                                 Context context = backImageView.getContext();
                                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
