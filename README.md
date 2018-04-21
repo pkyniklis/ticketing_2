@@ -11,3 +11,6 @@ Added Gate class.
 Added pop-up between MainActivity and GateActivity
 Change GateActivity label dynamically.
 Added arena views in GateActivity.
+
+Firebase integration:
+Moved data to a firebase database.

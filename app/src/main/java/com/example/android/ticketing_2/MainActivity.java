@@ -31,44 +31,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //Log.d("Petros", "test1" );
 
-        /*
-        gates.put("111" , new Gate("111", 7, 15, 0xff3c0000));
-        gates.put("218" , new Gate("218", 4, 12, 0xff140000));
-        gates.put("219" , new Gate("219", 4, 10, 0xff280000));
-        */
         DatabaseReference mDatabase;
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Gates");
-
         mDatabase.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Gate gate = dataSnapshot.getValue(Gate.class);
                 gatesList.add(gate);
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
             }
-
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
+        // see https://github.com/alexvasilkov/GestureViews
         GestureView gestureView = findViewById(R.id.gestureView);
         gestureView.getController().getSettings()
                 .setMaxZoom(10f)
@@ -85,17 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 .setGravity(Gravity.CENTER);
 
         final ImageView backImageView = findViewById(R.id.back);
-
         final Intent intent = new Intent(this, GateActivity.class);
 
-        /*
-        gatesList.add(new Gate("111", 7, 15, 0xff3c0000));
-        gatesList.add(new Gate("218", 4, 12, 0xff140000));
-        gatesList.add(new Gate("219", 4, 10, 0xff280000));
-        */
-
         backImageView.setOnTouchListener(new View.OnTouchListener() {
-
             final int DOUBLE_TAP_DURATION = 500;
             long tapTime = System.currentTimeMillis();
 
@@ -106,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
                 final int y = (int) event.getY();
 
                 if (action == MotionEvent.ACTION_DOWN) {
-
                     if (System.currentTimeMillis() - tapTime < DOUBLE_TAP_DURATION) {
                         backImageView.setDrawingCacheEnabled(true);
                         Bitmap hotspots = Bitmap.createBitmap(backImageView.getDrawingCache());

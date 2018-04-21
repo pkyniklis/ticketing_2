@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "117790867718",
+    "firebase_url": "https://ticketing2-f63d6.firebaseio.com",
+    "project_id": "ticketing2-f63d6",
+    "storage_bucket": "ticketing2-f63d6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117790867718:android:d12f5efceadabfce",
+        "android_client_info": {
+          "package_name": "com.example.android.ticketing_2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "117790867718-nduevju01qtept44dhas3as2uif5gb81.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.android.ticketing_2",
+            "certificate_hash": "0c987205225605d0a8650acadb54b5723427baaf"
+          }
+        },
+        {
+          "client_id": "117790867718-ciirg645dnr3079dgr0cv4uk6i4q6hi6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGmjXy_xtVH01b54j4gZqWIiFFQ2W4qFE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "117790867718-ciirg645dnr3079dgr0cv4uk6i4q6hi6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

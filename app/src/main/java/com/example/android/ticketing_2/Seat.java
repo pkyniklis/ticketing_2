@@ -5,14 +5,17 @@ public class Seat {
     private int row;
     private int col;
     private boolean free;
-    private int color;
+    private String color;
 
-    public Seat(String gateNo, int row, int col, boolean free, int color) {
+    public Seat(String gateNo, int row, int col, boolean free, String color) {
         this.gateNo = gateNo;
         this.row = row;
         this.col = col;
         this.free = free;
         this.color = color;
+    }
+
+    public Seat() {
     }
 
     public int getRow() {
@@ -27,7 +30,7 @@ public class Seat {
         return free;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 }
