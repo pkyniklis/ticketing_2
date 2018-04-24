@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     final ArrayList<Gate> gatesList = new ArrayList<>();
 
+    //final GlobalClass global = (GlobalClass)getApplicationContext();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

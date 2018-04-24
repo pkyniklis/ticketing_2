@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+For converting SVG files to vector drawables,
+see http://a-student.github.io/SvgToVectorDrawableConverter.Web/
+
+For creating SVG files, see, for example, www.inkscape.org
+ -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="221.75999dp"
     android:height="336dp"
