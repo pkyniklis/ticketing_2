@@ -16,6 +16,8 @@ import com.alexvasilkov.gestures.Settings;
 import com.alexvasilkov.gestures.views.interfaces.GestureView;
 import com.devs.vectorchildfinder.VectorChildFinder;
 import com.devs.vectorchildfinder.VectorDrawableCompat;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +27,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 public class GateActivity extends AppCompatActivity {
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,7 @@ public class GateActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Seat seat = dataSnapshot.getValue(Seat.class);
+                Log.d("Petros", seat.getUserId() + "!");
                 seatsList.add(seat);
 
                 String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
@@ -167,6 +172,9 @@ public class GateActivity extends AppCompatActivity {
                                     String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
                                     //seat.setBooked(true);
                                     seat.setBooked(!seat.isBooked());
+                                    Log.d("Petros", user.getUid());
+                                    if (seat.isBooked()) seat.setUserId(user.getUid());
+                                    else seat.setUserId("-");
                                     mGateRef.child(seatPathName).setValue(seat);
                                     //final VectorDrawableCompat.VFullPath seatPath = vector.findPathByName(seatPathName);
                                     //setOrangeColor(seatPath);
@@ -174,7 +182,6 @@ public class GateActivity extends AppCompatActivity {
                                 }
                             }
                         }
-
                     }
                     tapTime = System.currentTimeMillis();
                 }

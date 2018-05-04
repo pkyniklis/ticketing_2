@@ -7,14 +7,16 @@ public class Seat {
     private boolean free;
     private boolean booked;
     private String color;
+    private String userId;
 
-    public Seat(String gateNo, int row, int col, boolean free, boolean booked, String color) {
+    public Seat(String gateNo, int row, int col, boolean free, boolean booked, String color, String userId) {
         this.gateNo = gateNo;
         this.row = row;
         this.col = col;
         this.free = free;
         this.booked = booked;
         this.color = color;
+        this.userId = userId;
     }
 
     public Seat() {
@@ -24,6 +26,7 @@ public class Seat {
         this.free = true;
         this.booked = false;
         this.color = "";
+        this.userId = "";
     }
 
     public int getRow() {
@@ -48,6 +51,14 @@ public class Seat {
 
     public void setFree(boolean free) {
         this.free = free;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getColor() {
