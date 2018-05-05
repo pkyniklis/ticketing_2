@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,18 +19,19 @@ import com.alexvasilkov.gestures.views.interfaces.GestureView;
 import com.devs.vectorchildfinder.VectorChildFinder;
 import com.devs.vectorchildfinder.VectorDrawableCompat;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class GateActivity extends AppCompatActivity {
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    Gate gate = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class GateActivity extends AppCompatActivity {
 
         // Get gateNo from the intent
         Intent intent = getIntent();
-        String gateNo = intent.getStringExtra("Gate");
+        final String gateNo = intent.getStringExtra("Gate");
         //Toast.makeText(GateActivity.this, "Gate "+gateNo, Toast.LENGTH_SHORT).show();
 
         setTitle("Gate " + gateNo);
@@ -79,48 +82,71 @@ public class GateActivity extends AppCompatActivity {
         // see https://github.com/devsideal/VectorChildFinder
         final VectorChildFinder vector = new VectorChildFinder(this, frontID, frontImageView);
 
-        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("Seats");
-        final DatabaseReference mGateRef = mDatabase.child("Gate" + gateNo);
-        mGateRef.addChildEventListener(new ChildEventListener() {
+        final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference mSeatsGateRef = mDatabase.child("Seats").child("Gate" + gateNo);
+        final DatabaseReference mGateRef = mDatabase.child("Gates").child(gateNo);
+
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                gate = dataSnapshot.child("Gates").child(gateNo).getValue(Gate.class);
+                Log.d("Petros", "gate" + gate.getGateNo());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        mSeatsGateRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Seat seat = dataSnapshot.getValue(Seat.class);
-                Log.d("Petros", seat.getUserId() + "!");
+                //Log.d("Petros", seat.getUserId());
                 seatsList.add(seat);
 
                 String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
                 final VectorDrawableCompat.VFullPath seatPath = vector.findPathByName(seatPathName);
 
-                if (seat.isFree() && seat.isBooked()) seatPath.setFillColor(0xfff9a825); //orange
-                if (seat.isFree() && !seat.isBooked()) seatPath.setFillColor(0xff64dd17); //green
-                if (!seat.isFree()) seatPath.setFillColor(0xff9e9e9e); //gray
-
+                if (seat.isFree() && seat.isBooked() && seat.getUserId().equals(currentUserId)) {
+                    seatPath.setFillColor(0xfff9a825); //orange
+                }
+                if (seat.isFree() && !seat.isBooked()) {
+                    seatPath.setFillColor(0xff64dd17); //green
+                }
+                if (!seat.isFree() || (seat.isBooked() && !seat.getUserId().equals(currentUserId))) {
+                    seatPath.setFillColor(0xff9e9e9e); //gray
+                }
                 frontImageView.invalidate();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Seat seat = dataSnapshot.getValue(Seat.class);
-                //seatsList.add(seat);
+                updateSeatsList(seatsList, seat);
 
                 String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
                 //seatsList.update(seatPathName, seat);
                 final VectorDrawableCompat.VFullPath seatPath = vector.findPathByName(seatPathName);
 
-                if (seat.isFree() && seat.isBooked()) seatPath.setFillColor(0xfff9a825); //orange
-                if (seat.isFree() && !seat.isBooked()) seatPath.setFillColor(0xff64dd17); //green
-                if (!seat.isFree()) seatPath.setFillColor(0xff9e9e9e); //gray
+                if (seat.isFree() && seat.isBooked() && seat.getUserId().equals(currentUserId)) {
+                    seatPath.setFillColor(0xfff9a825); //orange
+                }
+                if (seat.isFree() && !seat.isBooked()) {
+                    seatPath.setFillColor(0xff64dd17); //green
+                }
+                if (!seat.isFree() || (seat.isBooked() && !seat.getUserId().equals(currentUserId))) {
+                    seatPath.setFillColor(0xff9e9e9e); //gray
+                }
                 frontImageView.invalidate();
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
             }
-
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -146,39 +172,25 @@ public class GateActivity extends AppCompatActivity {
                         int touchColor = hotspots.getPixel(x, y);
 
                         // Loop through all seats and find the one with the same color
-                        /*
                         for (Seat seat : seatsList) {
                             int seatColor = Color.parseColor(seat.getColor());
-                            //if (touchColor == seatColor && seat.isFree()) {
+
                             if (touchColor == seatColor) {
-                                // For this seat, do something (temporarily change color)
-                                String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
-                                seat.setFree(!seat.isFree());
-                                mGateRef.child(seatPathName).setValue(seat);
-                                final VectorDrawableCompat.VFullPath seatPath = vector.findPathByName(seatPathName);
-                                //toggleColor(seatPath);
-                                //frontImageView.invalidate();
-                            }
-                        }
-                        */
-                        for (Seat seat : seatsList) {
-                            int seatColor = Color.parseColor(seat.getColor());
-
-                            if (touchColor == seatColor && seat.isFree()) {
-
-                                //if ( !seat.isBooked() ) {
-                                if (seat.isFree()) {
+                                boolean seatIsAvailable = seat.isFree() && (!seat.isBooked());
+                                if (seatIsAvailable) {
                                     Log.d("Petros", "add seat");
                                     String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
-                                    //seat.setBooked(true);
-                                    seat.setBooked(!seat.isBooked());
-                                    Log.d("Petros", user.getUid());
-                                    if (seat.isBooked()) seat.setUserId(user.getUid());
-                                    else seat.setUserId("-");
-                                    mGateRef.child(seatPathName).setValue(seat);
-                                    //final VectorDrawableCompat.VFullPath seatPath = vector.findPathByName(seatPathName);
-                                    //setOrangeColor(seatPath);
-                                    //frontImageView.invalidate();
+                                    seat.setBooked(true);
+                                    //Log.d("Petros", user.getUid());
+                                    seat.setUserId(currentUserId);
+                                    mSeatsGateRef.child(seatPathName).setValue(seat);
+                                    if (gate != null) {
+                                        gate.decreaseFreeSeats();
+                                        mGateRef.setValue(gate);
+                                        mDatabase.child("bookedSeats")
+                                                .child("g" + gateNo + seatPathName + "p" + gate.getPrice())
+                                                .setValue(currentUserId);
+                                    }
                                 }
                             }
                         }
@@ -190,17 +202,30 @@ public class GateActivity extends AppCompatActivity {
         });
     }
 
-    private void toggleAlpha(VectorDrawableCompat.VFullPath seat) {
-        if (seat.getFillAlpha() != 128) seat.setFillAlpha(128);
-        else seat.setFillAlpha(1);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.gate_menu, menu);
+        return true;
     }
 
-    private void toggleColor(VectorDrawableCompat.VFullPath seat) {
-        if (seat.getFillColor() != 0xff9e9e9e) seat.setFillColor(0xff9e9e9e);
-        else seat.setFillColor(0xff64dd17);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_checkout) {
+            final Intent checkoutIntent = new Intent(this, CheckoutActivity.class);
+            startActivity(checkoutIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
-    private void setOrangeColor(VectorDrawableCompat.VFullPath seat) {
-        seat.setFillColor(0xfff9a825);
+    private void updateSeatsList(ArrayList<Seat> seatsList, Seat seat) {
+        for (Seat s : seatsList) {
+            if (seat.getRow() == s.getRow() && seat.getCol() == s.getCol()) {
+                s.setFree(seat.isFree());
+                s.setBooked(seat.isBooked());
+            }
+        }
     }
 }

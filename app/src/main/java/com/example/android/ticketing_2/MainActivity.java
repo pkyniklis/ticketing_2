@@ -75,15 +75,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 }
-
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                 }
-
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
@@ -106,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                     .setGravity(Gravity.CENTER);
 
             final ImageView backImageView = findViewById(R.id.back);
-            final Intent intent = new Intent(this, GateActivity.class);
+            final Intent gateIntent = new Intent(this, GateActivity.class);
 
             backImageView.setOnTouchListener(new View.OnTouchListener() {
                 final int DOUBLE_TAP_DURATION = 500;
@@ -144,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
                                             "Buy tickets",
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
-                                                    intent.putExtra("Gate", chosenGate.getGateNo());
-                                                    startActivity(intent);
+                                                    gateIntent.putExtra("Gate", chosenGate.getGateNo());
+                                                    startActivity(gateIntent);
                                                 }
                                             });
 
@@ -174,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.ticketing_menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
@@ -186,6 +183,13 @@ public class MainActivity extends AppCompatActivity {
             this.recreate();
             return true;
         }
+
+        if (item.getItemId() == R.id.action_checkout) {
+            final Intent checkoutIntent = new Intent(this, CheckoutActivity.class);
+            startActivity(checkoutIntent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -201,12 +205,10 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 Log.d("Petros", user.getUid());
                 this.recreate();
-                // ...
             } else {
                 // Sign in failed, check response for error code
                 Log.d("Petros", "Login failed");
                 Toast.makeText(MainActivity.this, "Please login to continue", Toast.LENGTH_SHORT).show();
-                // ...
             }
         }
     }

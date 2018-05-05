@@ -3,10 +3,10 @@ package com.example.android.ticketing_2;
 public class Gate {
     private String gateNo;
     private int freeSeats;
-    private float price;
+    private int price;
     private String color;
 
-    public Gate(String gateNo, int numberOfSeats, float price, String color) {
+    public Gate(String gateNo, int numberOfSeats, int price, String color) {
         this.gateNo = gateNo;
         this.freeSeats = numberOfSeats;
         this.price = price;
@@ -24,12 +24,16 @@ public class Gate {
         return freeSeats;
     }
 
-    public float getPrice() {
+    public int getPrice() {
         return price;
     }
 
     public String getColor() {
         return color;
+    }
+
+    public void decreaseFreeSeats() {
+        this.freeSeats--;
     }
 }
 
