@@ -2,7 +2,6 @@ package com.example.android.ticketing_2;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,29 +12,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CheckoutActivity extends AppCompatActivity {
 
     String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    List<String> bookedSeatsList = new ArrayList<>();
+    ArrayList<String> bookedSeatsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
 
-        //generate list
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("item1");
-        list.add("item2");
-
         //instantiate custom adapter
-        MyCustomAdapter adapter = new MyCustomAdapter(list, this);
-
-        //handle listview and assign adapter
-        ListView lView = findViewById(R.id.my_listview);
-        lView.setAdapter(adapter);
+        final MyCustomAdapter adapter = new MyCustomAdapter(bookedSeatsList, this);
 
         final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mBookedSeatsRef = mDatabase.child("bookedSeats");
@@ -45,26 +34,37 @@ public class CheckoutActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String seatInfo = dataSnapshot.getKey();
                 if (dataSnapshot.getValue().equals(currentUserId)) {
-                    bookedSeatsList.add(seatInfo);
-                    Log.d("Petros", seatInfo);
+
+                    String ticketString = "Gate " + SeatStringFunctions.getGate(seatInfo)
+                            + " \nRow " + SeatStringFunctions.getRow(seatInfo)
+                            + " Seat " + SeatStringFunctions.getSeat(seatInfo)
+                            + " \nPrice " + SeatStringFunctions.getPrice(seatInfo) + " €";
+
+                    bookedSeatsList.add(ticketString);
+                    //Log.d("Petros", seatInfo);
+                    ListView lView = findViewById(R.id.my_listview);
+                    lView.setAdapter(adapter);
                 }
             }
-
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             }
-
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
             }
-
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        //Log.d("Petros", "list -->" + bookedSeatsList.get(0));
+
+
+        //handle listview and assign adapter
+        //ListView lView = findViewById(R.id.my_listview);
+        //lView.setAdapter(adapter);
     }
 }

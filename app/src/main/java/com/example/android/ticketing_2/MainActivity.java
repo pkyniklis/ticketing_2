@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                                     Context context = backImageView.getContext();
                                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
                                     dialogBuilder.setMessage("Gate " + chosenGate.getGateNo() + "\n" +
-                                            "Price : " + chosenGate.getPrice() + " euro \n" +
+                                            "Price : " + chosenGate.getPrice() + " € \n" +
                                             "Free seats : " + chosenGate.getFreeSeats());
                                     dialogBuilder.setCancelable(true);
 
