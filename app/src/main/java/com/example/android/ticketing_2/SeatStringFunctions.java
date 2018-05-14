@@ -15,6 +15,10 @@ public class SeatStringFunctions {
         return seatInfo.substring(seatInfo.indexOf("s") + 1, seatInfo.indexOf("p"));
     }
 
+    public static String getRowAndSeat(String seatInfo) {
+        return seatInfo.substring(seatInfo.indexOf("r") + 1, seatInfo.indexOf("p"));
+    }
+
     public static int getPrice(String seatInfo) {
         return Integer.parseInt(seatInfo.substring(seatInfo.indexOf("p") + 1));
     }

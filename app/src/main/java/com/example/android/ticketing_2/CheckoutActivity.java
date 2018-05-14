@@ -17,6 +17,8 @@ public class CheckoutActivity extends AppCompatActivity {
 
     String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     ArrayList<String> bookedSeatsList = new ArrayList<>();
+    ArrayList<String> keysList = new ArrayList<>();
+    //ListView lView = findViewById(R.id.my_listview);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,7 @@ public class CheckoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout);
 
         //instantiate custom adapter
-        final MyCustomAdapter adapter = new MyCustomAdapter(bookedSeatsList, this);
+        final MyCustomAdapter adapter = new MyCustomAdapter(bookedSeatsList, keysList, this);
 
         final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mBookedSeatsRef = mDatabase.child("bookedSeats");
@@ -34,6 +36,8 @@ public class CheckoutActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String seatInfo = dataSnapshot.getKey();
                 if (dataSnapshot.getValue().equals(currentUserId)) {
+
+                    keysList.add(seatInfo);
 
                     String ticketString = "Gate " + SeatStringFunctions.getGate(seatInfo)
                             + " \nRow " + SeatStringFunctions.getRow(seatInfo)
