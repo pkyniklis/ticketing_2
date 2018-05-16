@@ -21,7 +21,11 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".CheckoutActivity"
-            android:label="Check Out"
+            android:label="My Basket"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".MyTicketsActivity"
+            android:label="My Tickets"
             android:parentActivityName=".MainActivity"></activity>
     </application>
 

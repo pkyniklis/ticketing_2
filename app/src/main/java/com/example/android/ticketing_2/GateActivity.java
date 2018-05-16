@@ -1,10 +1,12 @@
 package com.example.android.ticketing_2;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -62,6 +64,7 @@ public class GateActivity extends AppCompatActivity {
         // Get gateNo from the intent
         Intent intent = getIntent();
         final String gateNo = intent.getStringExtra("Gate");
+        final String gatePrice = intent.getStringExtra("Price");
         //Toast.makeText(GateActivity.this, "Gate "+gateNo, Toast.LENGTH_SHORT).show();
 
         setTitle("Gate " + gateNo);
@@ -70,7 +73,7 @@ public class GateActivity extends AppCompatActivity {
         String backGateName = "gate" + gateNo + "_back";
         String frontGateName = "gate" + gateNo + "_front";
         String viewName = "view" + gateNo;
-        Context context = backImageView.getContext();
+        final Context context = backImageView.getContext();
         int backID = context.getResources().getIdentifier(backGateName, "drawable", context.getPackageName());
         int frontID = context.getResources().getIdentifier(frontGateName, "drawable", context.getPackageName());
         int viewID = context.getResources().getIdentifier(viewName, "drawable", context.getPackageName());
@@ -173,24 +176,52 @@ public class GateActivity extends AppCompatActivity {
 
                         // Loop through all seats and find the one with the same color
                         for (Seat seat : seatsList) {
+                            final Seat currentSeat = seat;
                             int seatColor = Color.parseColor(seat.getColor());
 
                             if (touchColor == seatColor) {
                                 boolean seatIsAvailable = seat.isFree() && (!seat.isBooked());
                                 if (seatIsAvailable) {
-                                    Log.d("Petros", "add seat");
-                                    String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
-                                    seat.setBooked(true);
-                                    //Log.d("Petros", user.getUid());
-                                    seat.setUserId(currentUserId);
-                                    mSeatsGateRef.child(seatPathName).setValue(seat);
-                                    if (gate != null) {
-                                        gate.decreaseFreeSeats();
-                                        mGateRef.setValue(gate);
-                                        mDatabase.child("bookedSeats")
-                                                .child("g" + gateNo + seatPathName + "p" + gate.getPrice())
-                                                .setValue(currentUserId);
-                                    }
+
+                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                                    dialogBuilder.setMessage(
+                                            "Row " + seat.getRow() +
+                                                    "  Seat " + seat.getCol() + "\n" +
+                                                    "Price : " + gatePrice + " €");
+                                    dialogBuilder.setCancelable(true);
+
+                                    dialogBuilder.setPositiveButton(
+                                            "Add to basket",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+
+                                                    Log.d("Petros", "add seat");
+                                                    String seatPathName = "r" + currentSeat.getRow() + "s" + currentSeat.getCol();
+                                                    currentSeat.setBooked(true);
+                                                    //Log.d("Petros", user.getUid());
+                                                    currentSeat.setUserId(currentUserId);
+                                                    mSeatsGateRef.child(seatPathName).setValue(currentSeat);
+                                                    if (gate != null) {
+                                                        gate.decreaseFreeSeats();
+                                                        mGateRef.setValue(gate);
+                                                        mDatabase.child("bookedSeats")
+                                                                .child("g" + gateNo + seatPathName + "p" + gate.getPrice())
+                                                                .setValue(currentUserId);
+                                                    }
+
+                                                }
+                                            });
+
+                                    dialogBuilder.setNegativeButton(
+                                            "Cancel",
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+
+                                    AlertDialog alert = dialogBuilder.create();
+                                    alert.show();
                                 }
                             }
                         }
@@ -217,6 +248,13 @@ public class GateActivity extends AppCompatActivity {
             startActivity(checkoutIntent);
             return true;
         }
+
+        if (item.getItemId() == R.id.action_myTickets) {
+            final Intent myTicketsIntent = new Intent(this, MyTicketsActivity.class);
+            startActivity(myTicketsIntent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
                                                     gateIntent.putExtra("Gate", chosenGate.getGateNo());
+                                                    gateIntent.putExtra("Price", String.valueOf(chosenGate.getPrice()));
                                                     startActivity(gateIntent);
                                                 }
                                             });
@@ -187,6 +188,12 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.action_checkout) {
             final Intent checkoutIntent = new Intent(this, CheckoutActivity.class);
             startActivity(checkoutIntent);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_myTickets) {
+            final Intent myTicketsIntent = new Intent(this, MyTicketsActivity.class);
+            startActivity(myTicketsIntent);
             return true;
         }
 

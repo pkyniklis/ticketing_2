@@ -6,9 +6,4 @@
         android:title="My Basket"
         app:showAsAction="never"></item>
 
-    <item
-        android:id="@+id/action_myTickets"
-        android:title="My Tickets"
-        app:showAsAction="never"></item>
-
 </menu>
