@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.alexvasilkov.gestures.Settings;
 import com.alexvasilkov.gestures.views.interfaces.GestureView;
@@ -88,6 +89,8 @@ public class GateActivity extends AppCompatActivity {
         final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference mSeatsGateRef = mDatabase.child("Seats").child("Gate" + gateNo);
         final DatabaseReference mGateRef = mDatabase.child("Gates").child(gateNo);
+
+        Toast.makeText(GateActivity.this, "Double tap to select seat", Toast.LENGTH_SHORT).show();
 
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

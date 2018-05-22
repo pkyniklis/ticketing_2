@@ -30,7 +30,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'com.github.devsideal:VectorChildFinder:1.0.0'
     implementation 'com.alexvasilkov:gesture-views:2.4.1'
-
+    implementation files('libs/core-3.2.1.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

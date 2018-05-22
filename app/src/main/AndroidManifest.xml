@@ -22,11 +22,15 @@
         <activity
             android:name=".CheckoutActivity"
             android:label="My Basket"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MyTicketsActivity"
             android:label="My Tickets"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".QRActivity"
+            android:label="Ticket QR"
+            android:parentActivityName=".MyTicketsActivity" />
     </application>
 
 </manifest>

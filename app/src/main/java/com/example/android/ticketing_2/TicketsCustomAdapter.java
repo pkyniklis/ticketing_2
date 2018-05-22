@@ -3,6 +3,7 @@ package com.example.android.ticketing_2;
 // see https://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ public class TicketsCustomAdapter extends BaseAdapter implements ListAdapter {
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
     private ArrayList<String> ticketsList = new ArrayList<String>();
     private Context context;
+
 
     public TicketsCustomAdapter(ArrayList<String> ticketsList, Context context) {
         this.ticketsList = ticketsList;
@@ -57,7 +59,14 @@ public class TicketsCustomAdapter extends BaseAdapter implements ListAdapter {
 
         //Handle TextView and display string from your list
         final TextView listItemText = view.findViewById(R.id.list_ticket_string);
-        listItemText.setText(ticketsList.get(position));
+
+        String codedString = ticketsList.get(position);
+        String ticketString = "Gate " + SeatStringFunctions.getGate(codedString)
+                + " \nRow " + SeatStringFunctions.getRow(codedString)
+                + " Seat " + SeatStringFunctions.getSeat(codedString)
+                + " \nPrice " + SeatStringFunctions.getPrice(codedString) + " €";
+
+        listItemText.setText(ticketString);
 
         //Handle buttons and add onClickListeners
         Button qrBtn = view.findViewById(R.id.qr_btn);
@@ -67,8 +76,9 @@ public class TicketsCustomAdapter extends BaseAdapter implements ListAdapter {
             public void onClick(View v) {
                 String ticketString = ticketsList.get(position) + " - " + currentUserName;
                 Log.d("Petros", "ticket string = " + ticketString);
-
-
+                final Intent qrIntent = new Intent(context, QRActivity.class);
+                qrIntent.putExtra("qrString", ticketString);
+                context.startActivity(qrIntent);
             }
         });
 
