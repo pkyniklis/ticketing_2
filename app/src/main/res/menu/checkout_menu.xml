@@ -3,8 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_main"
+        android:title="Court Layout"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_myTickets"
         android:title="My Tickets"
-        app:showAsAction="never"></item>
+        app:showAsAction="never" />
 
 </menu>

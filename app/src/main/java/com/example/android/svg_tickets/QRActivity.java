@@ -1,4 +1,4 @@
-package com.example.android.ticketing_2;
+package com.example.android.svg_tickets;
 
 
 import android.content.Intent;

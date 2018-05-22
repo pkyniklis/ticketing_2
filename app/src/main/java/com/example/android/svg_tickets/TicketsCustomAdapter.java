@@ -1,4 +1,4 @@
-package com.example.android.ticketing_2;
+package com.example.android.svg_tickets;
 
 // see https://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
 
