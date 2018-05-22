@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="8dp"
-    tools:context="com.example.android.ticketing_2.GateActivity">
+    tools:context="com.example.android.svg_tickets.GateActivity">
 
     <com.alexvasilkov.gestures.views.GestureFrameLayout
         android:id="@+id/gate_gestureView"

@@ -1,4 +1,4 @@
-package com.example.android.ticketing_2;
+package com.example.android.svg_tickets;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -82,48 +82,48 @@ public class CheckoutActivity extends AppCompatActivity {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!keysList.isEmpty()) {
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
 
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
+                    int cost = 0;
+                    for (String seatInfo : keysList) {
+                        cost += SeatStringFunctions.getPrice(seatInfo);
+                    }
 
-                int cost = 0;
-                for (String seatInfo : keysList) {
-                    cost += SeatStringFunctions.getPrice(seatInfo);
-                }
+                    dialogBuilder.setMessage("Pay " + cost + "€ ?");
+                    dialogBuilder.setCancelable(true);
 
-                dialogBuilder.setMessage("Pay " + cost + "€ ?");
-                dialogBuilder.setCancelable(true);
+                    dialogBuilder.setPositiveButton(
+                            "Pay",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
 
-                dialogBuilder.setPositiveButton(
-                        "Pay",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
+                                    for (String seatString : keysList) {
+                                        //Log.d("Petros", seatString + " // ");
+                                        final DatabaseReference mSeatRef = mDatabase.child("Seats")
+                                                .child("Gate" + SeatStringFunctions.getGate(seatString))
+                                                .child("r" + SeatStringFunctions.getRowAndSeat(seatString));
+                                        mSeatRef.child("booked").setValue(false);
+                                        mSeatRef.child("free").setValue(false);
+                                        mDatabase.child("bookedSeats").child(seatString).removeValue();
+                                        mDatabase.child("tickets").child(seatString).setValue(currentUserId);
+                                    }
+                                    startActivity(myTicketsIntent);
 
-                                for (String seatString : keysList) {
-                                    //Log.d("Petros", seatString + " // ");
-                                    final DatabaseReference mSeatRef = mDatabase.child("Seats")
-                                            .child("Gate" + SeatStringFunctions.getGate(seatString))
-                                            .child("r" + SeatStringFunctions.getRowAndSeat(seatString));
-                                    mSeatRef.child("booked").setValue(false);
-                                    mSeatRef.child("free").setValue(false);
-                                    mDatabase.child("bookedSeats").child(seatString).removeValue();
-                                    mDatabase.child("tickets").child(seatString).setValue(currentUserId);
                                 }
-                                startActivity(myTicketsIntent);
+                            });
 
-                            }
-                        });
+                    dialogBuilder.setNegativeButton(
+                            "Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
 
-                dialogBuilder.setNegativeButton(
-                        "Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-                AlertDialog alert = dialogBuilder.create();
-                alert.show();
-
+                    AlertDialog alert = dialogBuilder.create();
+                    alert.show();
+                }
             }
         });
     }
@@ -137,6 +137,12 @@ public class CheckoutActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_main) {
+            final Intent checkoutIntent = new Intent(this, MainActivity.class);
+            startActivity(checkoutIntent);
+            return true;
+        }
 
         if (item.getItemId() == R.id.action_myTickets) {
             final Intent myTicketsIntent = new Intent(this, MyTicketsActivity.class);

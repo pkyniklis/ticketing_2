@@ -1,4 +1,4 @@
-package com.example.android.ticketing_2;
+package com.example.android.svg_tickets;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -71,6 +71,12 @@ public class MyTicketsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_main) {
+            final Intent checkoutIntent = new Intent(this, MainActivity.class);
+            startActivity(checkoutIntent);
+            return true;
+        }
 
         if (item.getItemId() == R.id.action_checkout) {
             final Intent checkoutIntent = new Intent(this, CheckoutActivity.class);
