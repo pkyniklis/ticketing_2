@@ -38,13 +38,11 @@ public class MainActivity extends AppCompatActivity {
     final ArrayList<Gate> gatesList = new ArrayList<>();
     private static final int RC_SIGN_IN = 123;
 
-    //final GlobalClass global = (GlobalClass)getApplicationContext();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        // if user is not logged in
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             // Choose authentication providers
             List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -57,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                             .setAvailableProviders(providers)
                             .build(),
                     RC_SIGN_IN);
-        } else {
+        } else { // user is signed in
             setContentView(R.layout.activity_main);
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             Toast.makeText(MainActivity.this, "Double tap to select gate", Toast.LENGTH_SHORT).show();
@@ -68,22 +66,20 @@ public class MainActivity extends AppCompatActivity {
             mDatabase.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    // read a Gate object from database
                     Gate gate = dataSnapshot.getValue(Gate.class);
+                    // add this gate to a list
                     gatesList.add(gate);
                 }
 
                 @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                }
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) { }
                 @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                }
+                public void onChildRemoved(DataSnapshot dataSnapshot) { }
                 @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
+                public void onCancelled(DatabaseError databaseError) { }
             });
 
             // see https://github.com/alexvasilkov/GestureViews
@@ -116,11 +112,13 @@ public class MainActivity extends AppCompatActivity {
                     final int y = (int) event.getY();
 
                     if (action == MotionEvent.ACTION_DOWN) {
+                        // if double tap is detected
                         if (System.currentTimeMillis() - tapTime < DOUBLE_TAP_DURATION) {
                             backImageView.setDrawingCacheEnabled(true);
                             Bitmap hotspots = Bitmap.createBitmap(backImageView.getDrawingCache());
                             backImageView.setDrawingCacheEnabled(false);
 
+                            // get the color where the user has tapped
                             int touchColor = hotspots.getPixel(x, y);
                             //Toast.makeText(MainActivity.this, "Touch color "+ touchColor, Toast.LENGTH_SHORT).show();
 

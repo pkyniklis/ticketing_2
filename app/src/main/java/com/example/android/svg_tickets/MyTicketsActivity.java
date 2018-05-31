@@ -45,20 +45,13 @@ public class MyTicketsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            }
-
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) { }
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
-
+            public void onChildRemoved(DataSnapshot dataSnapshot) { }
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+            public void onCancelled(DatabaseError databaseError) { }
         });
     }
 

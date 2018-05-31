@@ -22,12 +22,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
-    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<String> list;
     long freeSeats;
     private Context context;
-    String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    //String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    private ArrayList<String> keysList = new ArrayList<String>();
+    private ArrayList<String> keysList;
 
     public MyCustomAdapter(ArrayList<String> list, ArrayList<String> keysList, Context context) {
         this.list = list;
@@ -88,8 +88,7 @@ public class MyCustomAdapter extends BaseAdapter implements ListAdapter {
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
+                    public void onCancelled(DatabaseError databaseError) { }
                 });
 
                 final DatabaseReference mSeatRef = mDatabase.child("Seats")

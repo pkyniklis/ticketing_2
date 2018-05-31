@@ -23,7 +23,7 @@ public class TicketsCustomAdapter extends BaseAdapter implements ListAdapter {
     String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     String currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
     DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-    private ArrayList<String> ticketsList = new ArrayList<String>();
+    private ArrayList<String> ticketsList;
     private Context context;
 
 
@@ -75,7 +75,7 @@ public class TicketsCustomAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
                 String ticketString = ticketsList.get(position) + " - " + currentUserName;
-                Log.d("Petros", "ticket string = " + ticketString);
+                //Log.d("Petros", "ticket string = " + ticketString);
                 final Intent qrIntent = new Intent(context, QRActivity.class);
                 qrIntent.putExtra("qrString", ticketString);
                 context.startActivity(qrIntent);

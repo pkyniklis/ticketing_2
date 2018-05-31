@@ -62,7 +62,7 @@ public class GateActivity extends AppCompatActivity {
         final ImageView frontImageView = findViewById(R.id.gate_front);
         final ImageView viewImageView = findViewById(R.id.gate_view);
 
-        // Get gateNo from the intent
+        // Get gateNo and gatePrice from the intent
         Intent intent = getIntent();
         final String gateNo = intent.getStringExtra("Gate");
         final String gatePrice = intent.getStringExtra("Price");
@@ -96,12 +96,11 @@ public class GateActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 gate = dataSnapshot.child("Gates").child(gateNo).getValue(Gate.class);
-                Log.d("Petros", "gate" + gate.getGateNo());
+                //Log.d("Petros", "gate" + gate.getGateNo());
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+            public void onCancelled(DatabaseError databaseError) { }
         });
 
         mSeatsGateRef.addChildEventListener(new ChildEventListener() {
@@ -109,11 +108,13 @@ public class GateActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Seat seat = dataSnapshot.getValue(Seat.class);
                 //Log.d("Petros", seat.getUserId());
+                // make a list with all Seat objects of this gate
                 seatsList.add(seat);
 
                 String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
                 final VectorDrawableCompat.VFullPath seatPath = vector.findPathByName(seatPathName);
 
+                // paint every seat the correct color according to its state
                 if (seat.isFree() && seat.isBooked() && seat.getUserId().equals(currentUserId)) {
                     seatPath.setFillColor(0xfff9a825); //orange
                 }
@@ -129,10 +130,10 @@ public class GateActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Seat seat = dataSnapshot.getValue(Seat.class);
+                // if a seat has changed state, then update also the content of the list
                 updateSeatsList(seatsList, seat);
 
                 String seatPathName = "r" + seat.getRow() + "s" + seat.getCol();
-                //seatsList.update(seatPathName, seat);
                 final VectorDrawableCompat.VFullPath seatPath = vector.findPathByName(seatPathName);
 
                 if (seat.isFree() && seat.isBooked() && seat.getUserId().equals(currentUserId)) {
@@ -148,14 +149,11 @@ public class GateActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-            }
+            public void onChildRemoved(DataSnapshot dataSnapshot) { }
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) { }
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
+            public void onCancelled(DatabaseError databaseError) { }
         });
 
 
@@ -198,7 +196,7 @@ public class GateActivity extends AppCompatActivity {
                                             new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
 
-                                                    Log.d("Petros", "add seat");
+                                                    //Log.d("Petros", "add seat");
                                                     String seatPathName = "r" + currentSeat.getRow() + "s" + currentSeat.getCol();
                                                     currentSeat.setBooked(true);
                                                     //Log.d("Petros", user.getUid());
